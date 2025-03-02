@@ -111,13 +111,13 @@ class Exp_Main(Exp_Basic):
                 if self.args.use_amp:
                     print(f"Loss shape: {loss.shape}, Loss value: {loss}")
 
-                    scaler.scale(loss).backward()
+                    scaler.scale(loss.mean()).backward()
                     scaler.step(model_optim)
                     scaler.update()
                 else:
                     print(f"Loss shape: {loss.shape}, Loss value: {loss}")
 
-                    loss.backward()
+                    loss.mean().backward()
 
                     model_optim.step()
 
