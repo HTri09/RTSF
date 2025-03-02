@@ -109,11 +109,16 @@ class Exp_Main(Exp_Basic):
                     time_now = time.time()
                     
                 if self.args.use_amp:
+                    print(f"Loss shape: {loss.shape}, Loss value: {loss}")
+
                     scaler.scale(loss).backward()
                     scaler.step(model_optim)
                     scaler.update()
                 else:
+                    print(f"Loss shape: {loss.shape}, Loss value: {loss}")
+
                     loss.backward()
+
                     model_optim.step()
 
             print("Epoch: {} cost time: {}".format(epoch + 1, time.time() - epoch_time))
