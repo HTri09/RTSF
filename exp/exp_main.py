@@ -95,10 +95,12 @@ class Exp_Main(Exp_Basic):
                 if self.args.use_amp:
                     with torch.cuda.amp.autocast():
                         _, loss = self.model(batch_x, batch_y)
-                        train_loss.append(loss.mean().item())
+                        loss = loss.mean()
+                        train_loss.append(loss.item())
                 else:
                     _, loss = self.model(batch_x, batch_y)
-                    train_loss.append(loss.mean().item())
+                    loss = loss.mean()
+                    train_loss.append(loss.item())
 
                 if (i + 1) % 100 == 0:
                     print("\titers: {0}, epoch: {1} | loss: {2:.7f}".format(i + 1, epoch + 1, loss.item()))
@@ -109,16 +111,11 @@ class Exp_Main(Exp_Basic):
                     time_now = time.time()
                     
                 if self.args.use_amp:
-                    print(f"Loss shape: {loss.shape}, Loss value: {loss}")
-
-                    scaler.scale(loss.mean()).backward()
+                    scaler.scale(loss).backward()
                     scaler.step(model_optim)
                     scaler.update()
                 else:
-                    print(f"Loss shape: {loss.shape}, Loss value: {loss}")
-
-                    loss.mean().backward()
-
+                    loss.backward()
                     model_optim.step()
 
             print("Epoch: {} cost time: {}".format(epoch + 1, time.time() - epoch_time))
